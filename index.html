@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rabbit Solutions | Engineering the Future</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Techy Glassmorphism Palette (Light Mode) */
+            --bg-base: #f8fafc; /* Pristine light slate */
+            --accent: #0284c7; /* Deep Sky Blue for contrast */
+            --text-primary: #0f172a; /* Deep Slate */
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Subtle Tech Grid Background */
+        .ambient-light {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center top, center center, center center;
+        }
+
+        /* Enhanced Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Dark Glassmorphism specifically for the timer */
+        .dark-glass-panel {
+            background: rgba(15, 23, 42, 0.9); /* Deep Tech Slate */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-glass-panel .timer-val {
+            color: #ffffff;
+        }
+
+        /* Typography Styles */
+        .hero-heading {
+            letter-spacing: -0.05em;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating-rabbit {
+            filter: drop-shadow(0 0 10px rgba(2, 132, 199, 0.2));
+            animation: float 5s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--bg-base);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--text-primary);
+            color: #ffffff;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(2, 132, 199, 0.2);
+        }
+
+        /* Timer Aesthetics */
+        .timer-val {
+            font-weight: 200;
+            font-size: 3.5rem;
+            line-height: 1;
+            color: var(--text-primary);
+        }
+
+        @media (min-width: 768px) {
+            .timer-val { font-size: 5.5rem; } /* Slightly larger for better visibility */
+        }
+
+        /* Page Turn / Flip Animation */
+        .timer-cell {
+            perspective: 1000px; /* Required for 3D effect */
+            transform-style: preserve-3d;
+        }
+
+        .timer-val {
+            display: inline-block;
+            transform-origin: center center;
+            will-change: transform, opacity;
+        }
+
+        .flip-animate {
+            animation: flipPage 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+        }
+
+        @keyframes flipPage {
+            0% { transform: rotateX(0deg); opacity: 1; }
+            49.9% { transform: rotateX(-90deg); opacity: 0; }
+            50% { transform: rotateX(90deg); opacity: 0; }
+            100% { transform: rotateX(0deg); opacity: 1; }
+        }
+
+        /* Running Rabbit Animation */
+        .rabbit-track {
+            position: fixed;
+            bottom: 15vh;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            pointer-events: none;
+            z-index: 0; /* Below the main content */
+            opacity: 0.25; /* Subtle and non-distracting */
+        }
+
+        .runner-container {
+            position: absolute;
+            bottom: 0;
+            left: -10%;
+            animation: runAcross 12s linear infinite;
+            color: var(--accent);
+            filter: drop-shadow(0 0 15px rgba(2, 132, 199, 0.3));
+        }
+
+        .runner-sprite {
+            /* Using cubic-bezier for a more realistic gravity/hopping effect */
+            animation: hopHop 0.4s cubic-bezier(0.2, 0.8, 0.4, 1) infinite alternate;
+        }
+
+        @keyframes runAcross {
+            0% { left: -10%; }
+            100% { left: 110%; }
+        }
+
+        @keyframes hopHop {
+            0% { transform: translateY(0) rotate(15deg) scaleX(1.05); }
+            100% { transform: translateY(-40px) rotate(-5deg) scaleX(0.95); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div class="ambient-light"></div>
+
+    <!-- Running Rabbit Background Element -->
+    <div class="rabbit-track">
+        <div class="runner-container">
+            <div class="runner-sprite">
+                <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 22C12 22 17 22 19 20C21 18 21 13 21 13C21 13 23 11 23 8C23 5 21 4 19 4C17 4 16 6 16 6L14 3L11 3L12 6C12 6 10 4 8 4C6 4 4 5 4 8C4 11 6 13 6 13C6 13 6 18 8 20C10 22 12 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="10" r="0.8" fill="currentColor" />
+                    <circle cx="15" cy="10" r="0.8" fill="currentColor" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-6 flex justify-between items-center glass-panel border-x-0 border-t-0 rounded-none">
+        <div class="flex items-center gap-3">
+            <span class="font-bold text-base tracking-tight uppercase">Rabbit Solutions</span>
+        </div>
+        <div class="hidden md:block">
+            <span class="text-[10px] text-slate-500 uppercase tracking-widest">Digital Transformation • AI • Infrastructure</span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center px-6 pt-32 pb-20">
+        
+        <!-- Status Badge -->
+        <div class="reveal mb-8" id="badge">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
+                <span class="text-[10px] tracking-widest text-sky-600 uppercase font-medium">System Initializing</span>
+            </div>
+        </div>
+
+        <!-- Hero -->
+        <div class="reveal text-center max-w-4xl" id="hero">
+            <h1 class="hero-heading text-3xl md:text-5xl lg:text-6xl font-light mb-8 text-slate-900">
+                Something <span class="font-bold italic text-sky-600">faster</span> is coming.
+            </h1>
+            <p class="text-slate-600 text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed mb-12 opacity-90">
+                Rabbit Solutions is redefining engineering excellence through AI-driven automation and sustainable infrastructure.
+            </p>
+        </div>
+
+        <!-- Timer -->
+        <div class="reveal dark-glass-panel px-8 md:px-16 py-14 rounded-[2.5rem] mb-20 w-full max-w-4xl relative z-10" id="timer">
+            <div class="grid grid-cols-4 gap-4 md:gap-0">
+                <div class="flex flex-col items-center border-r border-white/10 last:border-0 timer-cell">
+                    <span id="days" class="timer-val">07</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest mt-6">Days</span>
+                </div>
+                <div class="flex flex-col items-center border-r border-white/10 last:border-0 timer-cell">
+                    <span id="hours" class="timer-val">00</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest mt-6">Hours</span>
+                </div>
+                <div class="flex flex-col items-center border-r border-white/10 last:border-0 timer-cell">
+                    <span id="minutes" class="timer-val">00</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest mt-6">Minutes</span>
+                </div>
+                <div class="flex flex-col items-center timer-cell">
+                    <span id="seconds" class="timer-val text-sky-400 drop-shadow-md">00</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest mt-6">Seconds</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="reveal w-full max-w-md" id="cta">
+            <div class="glass-panel p-2 rounded-2xl flex items-center group shadow-xl transition-all duration-300 focus-within:border-sky-500/50">
+                <input type="email" id="email" placeholder="info@rabisol.com" class="bg-transparent border-none outline-none px-4 py-2 flex-grow text-sm placeholder:text-slate-400 text-slate-900">
+                <button onclick="handleSubmit()" class="btn-primary px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-white">
+                    Notify
+                </button>
+            </div>
+            <p id="feedback" class="text-center mt-6 text-[10px] text-sky-600 opacity-0 transition-all duration-300 uppercase tracking-widest">Transmission received. Standing by.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="px-8 py-12 border-t border-black/10">
+        <div class="max-w-7xl mx-auto flex justify-center items-center">
+            <div class="text-[10px] mono text-slate-500 tracking-widest uppercase text-center">
+                Copyright @rabbitsolutions pvt limited
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth Reveal Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.reveal');
+            elements.forEach((el, index) => {
+                setTimeout(() => el.classList.add('active'), 150 * index);
+            });
+        });
+
+        // 7-Day Countdown
+        const launchDate = new Date();
+        launchDate.setDate(launchDate.getDate() + 7);
+
+        // Helper function to animate individual digits
+        function updateDigit(id, newValue) {
+            const el = document.getElementById(id);
+            if (el.innerText !== newValue) {
+                // Add the animation class
+                el.classList.add('flip-animate');
+                
+                // Change the number exactly halfway through the animation (when it's invisible at 90deg)
+                setTimeout(() => {
+                    el.innerText = newValue;
+                }, 300); // 300ms is half of the 0.6s CSS animation
+                
+                // Remove the class when the animation completes
+                setTimeout(() => {
+                    el.classList.remove('flip-animate');
+                }, 600);
+            }
+        }
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const diff = launchDate - now;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            // Use the new animated update function
+            updateDigit('days', d.toString().padStart(2, '0'));
+            updateDigit('hours', h.toString().padStart(2, '0'));
+            updateDigit('minutes', m.toString().padStart(2, '0'));
+            updateDigit('seconds', s.toString().padStart(2, '0'));
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        function handleSubmit() {
+            const email = document.getElementById('email');
+            const fb = document.getElementById('feedback');
+            if (email.value.includes('@')) {
+                fb.style.opacity = '1';
+                email.value = '';
+                setTimeout(() => fb.style.opacity = '0', 4000);
+            }
+        }
+    </script>
+</body>
+</html>
